@@ -1,0 +1,255 @@
+<!-- Angular 19 Uyumlu HTML Editor Template -->
+<div class="html-editor-container">
+  <div class="editor-toolbar">
+    <!-- Format Types -->
+    <select [disabled]="disabled" (change)="applyFormatBlock($event)" class="format-select">
+      <option value="">Format</option>
+      <option value="p">Paragraf</option>
+      <option value="h1">Başlık 1</option>
+      <option value="h2">Başlık 2</option>
+      <option value="h3">Başlık 3</option>
+      <option value="h4">Başlık 4</option>
+      <option value="blockquote">Alıntı</option>
+      <option value="pre">Kod Bloğu</option>
+    </select>
+    
+    <!-- Font Family Selection -->
+    <select [disabled]="disabled" (change)="setFontFamily($event)" class="font-select">
+      <option value="">Font</option>
+      @for (font of fontFamilies; track font.value) {
+        <option [value]="font.value">{{ font.label }}</option>
+      }
+    </select>
+    
+    <!-- Font Size Selection -->
+    <select [disabled]="disabled" (change)="setFontSize($event)" class="font-size-select">
+      <option value="">Boyut</option>
+      @for (size of fontSizes; track size.value) {
+        <option [value]="size.value">{{ size.label }}</option>
+      }
+    </select>
+
+    <div class="toolbar-divider"></div>
+    
+    <!-- Style Buttons -->
+    <button type="button" [disabled]="disabled" (click)="execCommand('bold')" title="Kalın" [class.active]="isActive('bold')">
+      <i class="fas fa-bold"></i>
+    </button>
+    <button type="button" [disabled]="disabled" (click)="execCommand('italic')" title="İtalik" [class.active]="isActive('italic')">
+      <i class="fas fa-italic"></i>
+    </button>
+    <button type="button" [disabled]="disabled" (click)="execCommand('underline')" title="Altı Çizili" [class.active]="isActive('underline')">
+      <i class="fas fa-underline"></i>
+    </button>
+    <button type="button" [disabled]="disabled" (click)="execCommand('strikeThrough')" title="Üstü Çizili" [class.active]="isActive('strikeThrough')">
+      <i class="fas fa-strikethrough"></i>
+    </button>
+
+    <div class="toolbar-divider"></div>
+    
+    <!-- Color Pickers -->
+    <button type="button" class="color-button" [disabled]="disabled" title="Metin Rengi">
+      <input type="color" (change)="setForeColor($event)" [disabled]="disabled">
+      <i class="fas fa-font"></i>
+    </button>
+    <button type="button" class="color-button" [disabled]="disabled" title="Arkaplan Rengi">
+      <input type="color" (change)="setBackColor($event)" [disabled]="disabled">
+      <i class="fas fa-fill-drip"></i>
+    </button>
+
+    <div class="toolbar-divider"></div>
+    
+    <!-- Alignment Buttons -->
+    <button type="button" [disabled]="disabled" (click)="execCommand('justifyLeft')" title="Sola Hizala" [class.active]="isActive('justifyLeft')">
+      <i class="fas fa-align-left"></i>
+    </button>
+    <button type="button" [disabled]="disabled" (click)="execCommand('justifyCenter')" title="Ortala" [class.active]="isActive('justifyCenter')">
+      <i class="fas fa-align-center"></i>
+    </button>
+    <button type="button" [disabled]="disabled" (click)="execCommand('justifyRight')" title="Sağa Hizala" [class.active]="isActive('justifyRight')">
+      <i class="fas fa-align-right"></i>
+    </button>
+    <button type="button" [disabled]="disabled" (click)="execCommand('justifyFull')" title="İki Yana Yasla" [class.active]="isActive('justifyFull')">
+      <i class="fas fa-align-justify"></i>
+    </button>
+
+    <div class="toolbar-divider"></div>
+    
+    <!-- List Buttons -->
+    <button type="button" [disabled]="disabled" (click)="execCommand('insertUnorderedList')" title="Madde İşaretleri" [class.active]="isActive('insertUnorderedList')">
+      <i class="fas fa-list-ul"></i>
+    </button>
+    <button type="button" [disabled]="disabled" (click)="execCommand('insertOrderedList')" title="Numaralı Liste" [class.active]="isActive('insertOrderedList')">
+      <i class="fas fa-list-ol"></i>
+    </button>
+    <button type="button" [disabled]="disabled" (click)="execCommand('outdent')" title="Girintiyi Azalt">
+      <i class="fas fa-outdent"></i>
+    </button>
+    <button type="button" [disabled]="disabled" (click)="execCommand('indent')" title="Girinti Ekle">
+      <i class="fas fa-indent"></i>
+    </button>
+
+    <div class="toolbar-divider"></div>
+    
+    <!-- Links and Media -->
+    <button type="button" [disabled]="disabled" (click)="addLink()" title="Link Ekle" [class.active]="isLinkActive()">
+      <i class="fas fa-link"></i>
+    </button>
+    <button type="button" [disabled]="disabled" (click)="insertImage()" title="Resim Ekle">
+      <i class="fas fa-image"></i>
+    </button>
+    <button type="button" [disabled]="disabled" (click)="insertTable()" title="Tablo Ekle">
+      <i class="fas fa-table"></i>
+    </button>
+
+    <div class="toolbar-divider"></div>
+    
+    <!-- Editor Controls -->
+    <button type="button" [disabled]="disabled" (click)="undo()" title="Geri Al">
+      <i class="fas fa-undo"></i>
+    </button>
+    <button type="button" [disabled]="disabled" (click)="redo()" title="Yinele">
+      <i class="fas fa-redo"></i>
+    </button>
+    <button type="button" [disabled]="disabled" (click)="toggleSourceCode()" title="HTML Kaynağını Görüntüle" [class.active]="showSourceCode">
+      <i class="fas fa-code"></i>
+    </button>
+    <button type="button" [disabled]="disabled" (click)="execCommand('removeFormat')" title="Formatlamayı Temizle">
+      <i class="fas fa-eraser"></i>
+    </button>
+  </div>
+  
+  <div class="editor-content">
+    @if (!showSourceCode) {
+      <div
+        #editor
+        class="editor-area"
+        [attr.contenteditable]="!disabled"
+        [style.height]="height"
+        [attr.placeholder]="placeholder"
+        (blur)="onContentBlur()"
+        (input)="onContentChange()"
+        (keydown)="onEditorKeyDown($event)"
+        (mouseup)="onSelectionChange()"
+        (keyup)="onSelectionChange()"
+        (click)="onSelectionChange()"
+        (focus)="onSelectionChange()"
+        (paste)="onPaste($event)"
+        [attr.aria-label]="ariaLabel || 'HTML Düzenleyici'"
+        role="textbox"
+        [attr.aria-multiline]="true"
+      ></div>
+    } @else {
+      <textarea
+        #sourceCodeArea
+        class="source-code-area"
+        [style.height]="height"
+        [disabled]="disabled"
+        (blur)="onSourceCodeBlur()"
+        (input)="onSourceCodeChange($event)"
+        [attr.aria-label]="ariaLabel ? ariaLabel + ' (Kaynak Kod Görünümü)' : 'HTML Kaynak Kodu'"
+      ></textarea>
+    }
+  </div>
+  
+  <!-- Dialogs -->
+  @if (showLinkDialog) {
+    <div class="dialog-overlay">
+      <div class="dialog">
+        <h3>Link Ekle</h3>
+        <form (submit)="insertLink($event)">
+          <div class="form-group">
+            <label for="linkUrl">URL:</label>
+            <input type="url" id="linkUrl" [(ngModel)]="linkDialogData.url" name="url" required>
+          </div>
+          <div class="form-group">
+            <label for="linkText">Metin:</label>
+            <input type="text" id="linkText" [(ngModel)]="linkDialogData.text" name="text" required>
+          </div>
+          <div class="form-group">
+            <label for="linkTarget">Açılış Türü:</label>
+            <select id="linkTarget" [(ngModel)]="linkDialogData.target" name="target">
+              <option value="_self">Aynı Sekme</option>
+              <option value="_blank">Yeni Sekme</option>
+            </select>
+          </div>
+          <div class="dialog-actions">
+            <button type="button" (click)="cancelLinkDialog()">İptal</button>
+            <button type="submit">Ekle</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  }
+  
+  @if (showImageDialog) {
+    <div class="dialog-overlay">
+      <div class="dialog">
+        <h3>Resim Ekle</h3>
+        <form (submit)="insertImageElement($event)">
+          <div class="form-group">
+            <label for="imageUrl">URL:</label>
+            <input type="url" id="imageUrl" [(ngModel)]="imageDialogData.url" name="url" required>
+          </div>
+          <div class="form-group">
+            <label for="imageAlt">Alternatif Metin:</label>
+            <input type="text" id="imageAlt" [(ngModel)]="imageDialogData.alt" name="alt" required>
+          </div>
+          <div class="form-row">
+            <div class="form-group half">
+              <label for="imageWidth">Genişlik:</label>
+              <input type="text" id="imageWidth" [(ngModel)]="imageDialogData.width" name="width" placeholder="otomatik">
+            </div>
+            <div class="form-group half">
+              <label for="imageHeight">Yükseklik:</label>
+              <input type="text" id="imageHeight" [(ngModel)]="imageDialogData.height" name="height" placeholder="otomatik">
+            </div>
+          </div>
+          <div class="dialog-actions">
+            <button type="button" (click)="cancelImageDialog()">İptal</button>
+            <button type="submit">Ekle</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  }
+
+  @if (showTableDialog) {
+    <div class="dialog-overlay">
+      <div class="dialog">
+        <h3>Tablo Ekle</h3>
+        <form (submit)="insertTableElement($event)">
+          <div class="form-row">
+            <div class="form-group half">
+              <label for="tableRows">Satır Sayısı:</label>
+              <input type="number" id="tableRows" [(ngModel)]="tableDialogData.rows" name="rows" min="1" max="20" required>
+            </div>
+            <div class="form-group half">
+              <label for="tableCols">Sütun Sayısı:</label>
+              <input type="number" id="tableCols" [(ngModel)]="tableDialogData.cols" name="cols" min="1" max="20" required>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="tableWidth">Genişlik:</label>
+            <input type="text" id="tableWidth" [(ngModel)]="tableDialogData.width" name="width" placeholder="100%">
+          </div>
+          <div class="form-group">
+            <label for="tableBorder">Kenarlık:</label>
+            <input type="number" id="tableBorder" [(ngModel)]="tableDialogData.border" name="border" min="0" max="10">
+          </div>
+          <div class="form-group">
+            <label for="tableHeader">Tablo Başlığı:</label>
+            <div class="checkbox-group">
+              <input type="checkbox" id="tableHeader" [(ngModel)]="tableDialogData.header" name="header">
+              <label for="tableHeader">Başlık Satırı Ekle</label>
+            </div>
+          </div>
+          <div class="dialog-actions">
+            <button type="button" (click)="cancelTableDialog()">İptal</button>
+            <button type="submit">Ekle</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  }
+</div>
