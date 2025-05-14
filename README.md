@@ -1,59 +1,103 @@
-# HtmlEditorWorkspace
+# 📝 HtmlEditor for Angular
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.1.5.
+**HtmlEditor** is a lightweight and modular Angular WYSIWYG editor component. Easily plug it into your Angular application and give your users a rich text editing experience!
 
-## Development server
+![npm](https://img.shields.io/npm/v/@fatihmert93/html-editor?color=brightgreen)  
+![Angular](https://img.shields.io/badge/angular-%5E16.0.0-red)  
+![License](https://img.shields.io/badge/license-MIT-blue.svg)
 
-To start a local development server, run:
+---
 
-```bash
-ng serve
-```
-
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
-
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+## 📦 Installation
 
 ```bash
-ng generate component component-name
+npm install @teamlify/html-editor
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+> Or if you're using this locally from source:
 
 ```bash
-ng generate --help
+npm install path-to-your-project/dist/html-editor
 ```
 
-## Building
+---
 
-To build the project run:
+## 🚀 Quick Start
+
+### 1. Import the module:
+
+```ts
+import { HtmlEditorModule } from '@teamlify/html-editor';
+
+@NgModule({
+  imports: [
+    HtmlEditorModule
+  ]
+})
+export class AppModule { }
+```
+
+### 2. Use in your component:
+
+```html
+<lib-html-editor></lib-html-editor>
+```
+
+---
+
+## ⚙️ Features
+
+- ✅ Angular-compatible  
+- ✨ Lightweight and fast  
+- 🧩 Modular structure  
+- 🎨 Easy to style and customize  
+- 🛠️ Ideal for internal tools, admin panels, and forms
+
+---
+
+## 🛠️ Development
+
+To build the library:
 
 ```bash
-ng build
+ng build html-editor
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
+To test it inside a demo app:
 
 ```bash
-ng test
+ng serve demo-app
 ```
 
-## Running end-to-end tests
+---
 
-For end-to-end (e2e) testing, run:
+## 📁 Project Structure
 
-```bash
-ng e2e
+```
+html-editor-workspace/
+├── projects/
+│   ├── html-editor/           → Angular library
+│   └── demo-app/              → Test application
 ```
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+---
 
-## Additional Resources
+## 🧪 Coming Soon
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+- Toolbar support  
+- Formatting commands (bold, italic, underline)  
+- Output events for changes  
+- Content sanitization  
+- FormControl integration
+
+---
+
+## 🤝 Contributing
+
+Pull requests are welcome! For major changes, please open an issue first to discuss what you would like to change.
+
+---
+
+## 📜 License
+
+MIT © 2025 [Fatih Mert](https://github.com/fatihmert93)
