@@ -1,6 +1,16 @@
 {
   "name": "@teamlify/html-editor",
-  "version": "0.1.0",
+  "version": "1.0.0",
+  "description": "A lightweight Angular HTML editor component",
+  "author": "Fatih Mert",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/fatihmert93/html-editor-workspace.git"
+  },
+  "bugs": {
+    "url": "https://github.com/fatihmert93/html-editor-workspace/issues"
+  },
   "peerDependencies": {
     "@angular/common": "^19.2.0",
     "@angular/core": "^19.2.0",
